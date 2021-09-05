@@ -1,0 +1,16 @@
+  <ng-container *ngIf="isEdit; then edit; else read"> </ng-container>
+
+  <ng-template #edit>
+    <app-entscheidung-edit
+      [entscheidung]="entscheidung"
+      (saved)="onEdited($event)"
+    ></app-entscheidung-edit>
+  </ng-template>
+
+  <ng-template #read>
+    <app-entscheidung-show
+      [entscheidung]="entscheidung"
+      (toggleEdit)="toggleEdit()"
+    ></app-entscheidung-show>
+  </ng-template>
+

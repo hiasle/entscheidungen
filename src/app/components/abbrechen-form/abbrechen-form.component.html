@@ -1,0 +1,5 @@
+<form [formGroup]="abbrechenForm" (ngSubmit)="click()">
+  <input type="text" formControlName="param1"/>
+  <input type="text" formControlName="param2"/>
+  <button type="submit" [disabled]="!abbrechenForm.valid">Abbrechen</button>
+</form>
