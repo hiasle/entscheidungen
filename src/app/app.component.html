@@ -1,4 +1,18 @@
-<div class="container">
+<div class="wrapper container-fluid">
+  <div class="box header">
+    <app-header></app-header>
+  </div>
+  <div class="box sidebar">
+    <app-nav-sidebar></app-nav-sidebar>
+  </div>
+  <div class="box content">
+    <router-outlet></router-outlet>    
+  </div>
+  <div class="box footer">Footer</div>
+</div>
+
+
+<!-- <div class="container">
   <div class="d-flex justify-content-between align-items-baseline">
     <h1>Entscheidungen</h1>
     <button type="button" class="btn btn-primary" (click)="addEntscheidung()">
@@ -14,7 +28,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- <div id="templates">
   <ng-template let-options="options" #template4>
@@ -36,6 +50,8 @@
   </ng-container>
 </div> -->
 
+<!-- <app-parent></app-parent>
+
 <ng-container *ngTemplateOutlet="greet"></ng-container>
 <hr />
 <ng-container *ngTemplateOutlet="eng; context: myContext"></ng-container>
@@ -49,4 +65,4 @@
 >
 <ng-template #svk let-person="localSk"
   ><span>Ahoj {{ person }}!</span></ng-template
->
+> -->

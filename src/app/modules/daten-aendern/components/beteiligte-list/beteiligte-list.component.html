@@ -1,0 +1,12 @@
+<div *ngFor="let bet of beteiligte">
+  <app-beteiligter-read
+    *ngIf="bet !== editBeteiligter"
+    [beteiligter]="bet"
+    (editBeteiligter)="onBeteiligterEdit($event)"
+  ></app-beteiligter-read>
+  <app-beteiligter-edit
+    *ngIf="bet === editBeteiligter"
+    [beteiligter]="bet"
+    (onSave)="onBeteiligterSaved()"
+    ></app-beteiligter-edit>
+</div>

@@ -15,6 +15,13 @@ import { EntscheidungContentDirective } from './components/entscheidung-content.
 import { AbbrechenFormComponent } from './components/abbrechen-form/abbrechen-form.component';
 import { KanzleiauftragFormComponent } from './components/kanzleiauftrag-form/kanzleiauftrag-form.component';
 import { KeineEntscheidungComponent } from './components/keine-entscheidung/keine-entscheidung.component';
+import { ParentComponent } from './components/viewchild/parent/parent.component';
+import { Child1Component } from './components/viewchild/child1/child1.component';
+import { Child2Component } from './components/viewchild/child2/child2.component';
+import { HeaderComponent } from './components/header/header.component';
+import { NavSidebarComponent } from './components/nav-sidebar/nav-sidebar.component';
+import { EntscheidungenModule } from './modules/entscheidungen/entscheidungen.module';
+import { DatenAendernModule } from './modules/daten-aendern/daten-aendern.module';
 
 @NgModule({
   declarations: [
@@ -29,15 +36,23 @@ import { KeineEntscheidungComponent } from './components/keine-entscheidung/kein
     AbbrechenFormComponent,
     KanzleiauftragFormComponent,
     KeineEntscheidungComponent,
+    ParentComponent,
+    Child1Component,
+    Child2Component,
+    EntscheidungContentDirective,
+    HeaderComponent,
+    NavSidebarComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    EntscheidungenModule,
+    DatenAendernModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

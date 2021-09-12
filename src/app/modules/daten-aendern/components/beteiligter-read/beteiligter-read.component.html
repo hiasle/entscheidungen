@@ -1,0 +1,42 @@
+<div class="d-flex pb-4">
+  <div class="pe-4 beteiligter-toggle" (click)="onToggle()">
+    <fa-icon [icon]="faChevronRight" *ngIf="!toggle"></fa-icon>
+    <fa-icon [icon]="faChevronDown" *ngIf="toggle"></fa-icon>
+  </div>
+
+  <ng-container *ngIf="!toggle; else toggled">
+    <div>
+      {{ name }}
+      <span class="ps-4 beteiligter-toggle">
+        <fa-icon [icon]="faPencilAlt" (click)="onEditBeteiligter()"></fa-icon>
+      </span>
+    </div>
+  </ng-container>
+
+  <ng-template #toggled>
+    <div class="d-flex flex-column">
+      <div>
+        {{ name }}
+        <span class="ps-4 beteiligter-toggle" (click)="onEditBeteiligter()">
+          <fa-icon [icon]="faPencilAlt"></fa-icon>
+        </span>
+      </div>
+      <div *ngIf="hasRollen()">
+        <b>Rollen:</b>
+        <span
+          *ngFor="let rolle of beteiligter?.rollen"
+          class="badge bg-primary ms-2"
+          >{{ rolle }}</span>
+      </div>
+      <div>
+        <div><b>Adressen:</b></div>
+        <ul class="ps-4">
+          <li class="ps-4" *ngFor="let adresse of beteiligter?.adressen">
+            {{ adresse.strasseNummer }}, {{ adresse.postleitzahl }}
+            {{ adresse.ort }}, {{ adresse.land }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </ng-template>
+</div>
