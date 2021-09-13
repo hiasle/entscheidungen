@@ -1,6 +1,7 @@
 import { NullTemplateVisitor } from '@angular/compiler';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Beteiligter } from '../../models/beteiligter.model';
+import { BeteiligteService } from '../../services/beteiligte.service';
 
 @Component({
   selector: 'app-beteiligte-list',
@@ -13,6 +14,10 @@ export class BeteiligteListComponent implements OnInit {
 
   editBeteiligter: Beteiligter | null = null;
 
+  onAddBeteiligter(): void {
+    this.bs.addNewBeteiligter();
+  }
+
   onBeteiligterEdit(beteiligter: Beteiligter): void {
     this.editBeteiligter = beteiligter;
   }
@@ -21,7 +26,7 @@ export class BeteiligteListComponent implements OnInit {
     this.editBeteiligter = null;
   }
 
-  constructor() {}
+  constructor(private readonly bs: BeteiligteService) {}
 
   ngOnInit(): void {}
 }

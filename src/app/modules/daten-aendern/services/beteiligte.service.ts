@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Beteiligter, PersonTyp, Rolle } from '../models/beteiligter.model';
 import { BehaviorSubject } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,15 @@ export class BeteiligteService {
 
   public saveBeteiligter(beteiligter: Beteiligter): void {
     this.beteiligte = this.beteiligte.map(b => b.id === beteiligter.id ? beteiligter : b);
+    this.beteiligte$.next(this.beteiligte);
+  }
+
+  public addNewBeteiligter(): void {
+    this.beteiligte = [...this.beteiligte, {
+      id: uuidv4(),
+      persontyp: PersonTyp.natuerlich,
+      rollen: [Rolle.Sonstiger],
+    }];
     this.beteiligte$.next(this.beteiligte);
   }
 

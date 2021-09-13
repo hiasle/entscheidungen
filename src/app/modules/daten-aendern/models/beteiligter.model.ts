@@ -1,5 +1,5 @@
 export interface Beteiligter {
-  id?: number;
+  id?: number | string;
   persontyp: PersonTyp;
   natPerson?: NatuerlichePerson;
   jurPerson?: JuristischePerson;
