@@ -35,6 +35,6 @@ export enum Rolle {
 }
 
 export enum PersonTyp {
-  natuerlich,
-  juristisch,
+  natuerlich = 'natuerlich',
+  juristisch = 'juristisch',
 }

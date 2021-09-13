@@ -7,6 +7,6 @@
   <app-beteiligter-edit
     *ngIf="bet === editBeteiligter"
     [beteiligter]="bet"
-    (onSave)="onBeteiligterSaved()"
+    (onSave)="onBeteiligterSaved($event)"
     ></app-beteiligter-edit>
 </div>

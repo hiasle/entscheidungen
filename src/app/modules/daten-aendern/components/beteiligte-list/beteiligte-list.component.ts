@@ -17,7 +17,7 @@ export class BeteiligteListComponent implements OnInit {
     this.editBeteiligter = beteiligter;
   }
 
-  onBeteiligterSaved(): void {
+  onBeteiligterSaved(beteiligter: Beteiligter): void {
     this.editBeteiligter = null;
   }
 

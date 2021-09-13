@@ -6,9 +6,15 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class BeteiligteService {
-  public beteiligte$ = new BehaviorSubject<Beteiligter[]>(this.initialize());
+  private beteiligte = this.initialize();
+  public beteiligte$ = new BehaviorSubject<Beteiligter[]>(this.beteiligte);
 
   constructor() {}
+
+  public saveBeteiligter(beteiligter: Beteiligter): void {
+    this.beteiligte = this.beteiligte.map(b => b.id === beteiligter.id ? beteiligter : b);
+    this.beteiligte$.next(this.beteiligte);
+  }
 
   private initialize(): Beteiligter[] {
     return [

@@ -6,6 +6,7 @@ import {
   faPencilAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Beteiligter, PersonTyp } from '../../models/beteiligter.model';
+import { extractName } from '../../utils/beteiligte-utils';
 
 @Component({
   selector: 'app-beteiligter-read',
@@ -35,22 +36,7 @@ export class BeteiligterReadComponent implements OnInit {
   }
 
   get name(): string {
-    switch (this.beteiligter?.persontyp) {
-      case PersonTyp.juristisch:
-        return this.beteiligter?.jurPerson != null
-          ? this.beteiligter.jurPerson.name1 +
-              ' ' +
-              (this.beteiligter?.jurPerson?.name2 ?? '')
-          : '';
-      case PersonTyp.natuerlich:
-        return this.beteiligter.natPerson != null
-          ? this.beteiligter.natPerson.vorname +
-              ' ' +
-              this.beteiligter.natPerson.nachname
-          : '';
-      default:
-        return 'no name';
-    }
+    return extractName(this.beteiligter);
   }
 
   hasRollen(): boolean {
