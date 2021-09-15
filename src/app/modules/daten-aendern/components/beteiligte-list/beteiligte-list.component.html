@@ -3,13 +3,12 @@
 </div>
 <div *ngFor="let bet of beteiligte">
   <app-beteiligter-read
-    *ngIf="bet !== editBeteiligter"
+    *ngIf="bet !== (editBeteiligter$ | async)"
     [beteiligter]="bet"
     (editBeteiligter)="onBeteiligterEdit($event)"
   ></app-beteiligter-read>
   <app-beteiligter-edit
-    *ngIf="bet === editBeteiligter"
+  *ngIf="bet === (editBeteiligter$ | async)"
     [beteiligter]="bet"
-    (onSave)="onBeteiligterSaved($event)"
     ></app-beteiligter-edit>
 </div>

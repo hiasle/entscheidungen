@@ -1,5 +1,6 @@
 import { Beteiligter, PersonTyp } from './../models/beteiligter.model';
 import { NatuerlichePerson } from '../models/beteiligter.model';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 export function extractName(
   beteiligter: Beteiligter | undefined | null
@@ -20,7 +21,7 @@ export function extractName(
   }
 }
 
-export function merge(
+export function mergeBeteiligter(
   beteiligter: Beteiligter,
   formValue: Partial<Beteiligter>
 ): Beteiligter {

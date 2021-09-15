@@ -1,20 +1,51 @@
 import {
   ChangeDetectionStrategy,
-  Component, EventEmitter, Input,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnDestroy,
   OnInit,
-  Output
+  Output,
+  ViewChildren
 } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import {
-  Adresse,
+  FormArray,
+  FormBuilder,
+  FormControlName,
+  FormGroup
+} from '@angular/forms';
+import { fromEvent, merge, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import {
   Beteiligter,
   PersonTyp
 } from '../../models/beteiligter.model';
+import { BeteiligteFormService } from '../../services/beteiligte-form.service';
 import { BeteiligteService } from '../../services/beteiligte.service';
-import { extractName, merge } from '../../utils/beteiligte-utils';
-import { map } from 'rxjs/operators';
+import { extractName, mergeBeteiligter } from '../../utils/beteiligte-utils';
+import { GenericValidator } from '../../utils/generic-validator.utils';
 
 type PersonTypKeys = keyof typeof PersonTyp;
+
+const MIN_LENGTH = 4;
+const MIN_LENGTH_MSG = (key: string) =>
+  `${key} muss mindestens ${MIN_LENGTH} Zeichen haben!`;
+
+const VALIDATION_MESSAGES = {
+  vorname: {
+    required: 'Muss angegeben werden!',
+    minlength: MIN_LENGTH_MSG('Vorname'),
+  },
+  nachname: {
+    required: 'Muss angegeben werden!',
+    minlength: 'The password length must be greater than or equal to 8',
+  },
+  name1: {
+    required: 'Muss angegeben werden!',
+    minlength: MIN_LENGTH_MSG('Name1'),
+  }
+};
 
 @Component({
   selector: 'app-beteiligter-edit',
@@ -22,34 +53,81 @@ type PersonTypKeys = keyof typeof PersonTyp;
   styleUrls: ['./beteiligter-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BeteiligterEditComponent implements OnInit {
+export class BeteiligterEditComponent implements OnInit, OnDestroy {
+  // Access every form input fields in our signup html file
+  @ViewChildren(FormControlName, { read: ElementRef })
+  formInputElements!: ElementRef[];
+
   @Input() beteiligter: Beteiligter | undefined = undefined;
   @Output() onSave = new EventEmitter<Beteiligter>();
 
-  beteiligterForm: FormGroup | undefined = undefined;
+  beteiligterForm: FormGroup;
+
+  // Use with the generic validation message class
+  displayMessage: { [key: string]: string } = {};
+  private genericValidator: GenericValidator;
+
+  private readonly destroy$ = new Subject();
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly bs: BeteiligteService
-  ) {}
+    private readonly bs: BeteiligteService,
+    private readonly bfs: BeteiligteFormService
+  ) {
+    this.beteiligterForm = this.bfs.createForm(undefined, MIN_LENGTH);
+    this.genericValidator = new GenericValidator(VALIDATION_MESSAGES);
+  }
 
   ngOnInit(): void {
-    this.beteiligterForm = this.createForm(this.beteiligter);
-    this.beteiligterForm.valueChanges.subscribe(() =>
-      console.log(
-        'Beteiligter Form value changed: ',
-        this.beteiligterForm?.value
-      )
+    this.beteiligterForm = this.bfs.createForm(this.beteiligter, MIN_LENGTH);
+  }
+
+  ngAfterViewInit(): void {
+    // Watch for the blur event from any input element on the form.
+    const controlBlurs: Observable<any>[] = this.formInputElements.map(
+      (formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur')
     );
+    // Merge the blur event observable with the valueChanges observable
+    merge(this.beteiligterForm.valueChanges, controlBlurs)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.displayMessage = this.genericValidator.processMessages(
+          this.beteiligterForm
+        );
+      });
+
+    this.beteiligterForm.controls['persontyp'].valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: PersonTyp) => {
+        switch (value) {
+          case PersonTyp.juristisch:
+            this.beteiligterForm.controls['natPerson'].disable();
+            this.beteiligterForm.controls['jurPerson'].enable();
+            return;
+          case PersonTyp.natuerlich:
+            this.beteiligterForm.controls['natPerson'].enable();
+            this.beteiligterForm.controls['jurPerson'].disable();
+            return;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   onSubmit(): void {
     const savedOne = this.beteiligterForm?.value as Partial<Beteiligter>;
     if (this.beteiligter != null) {
-      this.beteiligter = merge(this.beteiligter, savedOne);
+      this.beteiligter = mergeBeteiligter(this.beteiligter, savedOne);
       this.onSave.emit(this.beteiligter);
       this.bs.saveBeteiligter(this.beteiligter);
     }
+  }
+
+  abbrechen(): void {
+    this.bs.clearBeteiligterEdit();
   }
 
   get name(): string {
@@ -57,11 +135,15 @@ export class BeteiligterEditComponent implements OnInit {
   }
 
   get juristisch(): boolean {
-    return this.beteiligterForm?.controls['persontyp'].value === PersonTyp.juristisch;
+    return (
+      this.beteiligterForm.controls['persontyp'].value === PersonTyp.juristisch
+    );
   }
 
   get natuerlich(): boolean {
-    return this.beteiligterForm?.controls['persontyp'].value === PersonTyp.natuerlich;
+    return (
+      this.beteiligterForm.controls['persontyp'].value === PersonTyp.natuerlich
+    );
   }
 
   get persontypes(): string[] {
@@ -69,71 +151,14 @@ export class BeteiligterEditComponent implements OnInit {
   }
 
   get adressen(): FormArray {
-    return this.beteiligterForm?.controls['adressen'] as FormArray;
+    return this.beteiligterForm.controls['adressen'] as FormArray;
   }
 
   addAdress() {
-    (<FormArray>this.beteiligterForm?.controls['adressen']).push(this.createAdressGroup(undefined));
+    (<FormArray>this.beteiligterForm.controls['adressen']).push(
+      this.bfs.createAdressGroup(undefined)
+    );
   }
 
-  private createForm(beteiligter: Beteiligter | undefined): FormGroup {
-    if (beteiligter == null) {
-      const formgroup = this.fb.group({
-        persontyp: this.fb.control('natuerlich'),
-        natPerson: this.fb.group({
-          vorname: this.fb.control(''),
-          nachname: this.fb.control(''),
-        }),
-        jurPerson: this.fb.group({
-          name1: this.fb.control(''),
-          name2: this.fb.control(''),
-        }),
-        adressen: this.fb.array(this.createAdressArr(undefined)),
-      });
-      return formgroup;
-    }
-
-    const formgroup = this.fb.group({
-      persontyp: this.fb.control(beteiligter.persontyp ?? PersonTyp.natuerlich),
-      natPerson: this.fb.group({
-        vorname: this.fb.control(beteiligter.natPerson?.vorname),
-        nachname: this.fb.control(beteiligter.natPerson?.nachname),
-      }),
-      jurPerson: this.fb.group({
-        name1: this.fb.control(beteiligter.jurPerson?.name1),
-        name2: this.fb.control(beteiligter.jurPerson?.name2),
-      }),
-      adressen: this.fb.array(this.createAdressArr(beteiligter.adressen)),
-    });
-    return formgroup;
-  }
-
-  private createAdressArr(adresses: Adresse[] | undefined): FormGroup[] {
-    if (adresses == null || adresses.length < 1) {
-      return [this.createAdressGroup(undefined)];
-    }
-    const array = [];
-    for (let adr of adresses) {
-      array.push(this.createAdressGroup(adr));
-    }
-    return array;
-  }
-
-  private createAdressGroup(adress: Adresse | undefined): FormGroup {
-    if (adress == null) {
-      return this.fb.group({
-        strasseNummer: this.fb.control(''),
-        postleitzahl: this.fb.control(''),
-        ort: this.fb.control(''),
-        land: this.fb.control(''),
-      });
-    }
-
-    return this.fb.group({
-      strasseNummer: this.fb.control(adress.strasseNummer),
-      postleitzahl: this.fb.control(adress.postleitzahl),
-      ort: this.fb.control(adress.ort),
-      land: this.fb.control(adress.land),
-    });
-  }
+  
 }

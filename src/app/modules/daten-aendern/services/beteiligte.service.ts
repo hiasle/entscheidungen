@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Beteiligter, PersonTyp, Rolle } from '../models/beteiligter.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable({
@@ -8,22 +8,46 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class BeteiligteService {
   private beteiligte = this.initialize();
-  public beteiligte$ = new BehaviorSubject<Beteiligter[]>(this.beteiligte);
+  private beteiligteList$ = new BehaviorSubject<Beteiligter[]>(this.beteiligte);
+  private beteiligterEdit$ = new BehaviorSubject<Beteiligter | undefined>(
+    undefined
+  );
 
   constructor() {}
 
+  get beteiligte$(): Observable<Beteiligter[]> {
+    return this.beteiligteList$.asObservable();
+  }
+
+  get editingBeteiligter$(): Observable<Beteiligter | undefined> {
+    return this.beteiligterEdit$.asObservable();
+  }
+
   public saveBeteiligter(beteiligter: Beteiligter): void {
-    this.beteiligte = this.beteiligte.map(b => b.id === beteiligter.id ? beteiligter : b);
-    this.beteiligte$.next(this.beteiligte);
+    this.beteiligte = this.beteiligte.map((b) =>
+      b.id === beteiligter.id ? beteiligter : b
+    );
+    this.beteiligteList$.next(this.beteiligte);
+    this.beteiligterEdit$.next(undefined);
+  }
+
+  public onEditBeteiligter(beteiligter: Beteiligter): void {
+    this.beteiligterEdit$.next(beteiligter);
   }
 
   public addNewBeteiligter(): void {
-    this.beteiligte = [...this.beteiligte, {
+    const beteiligter = {
       id: uuidv4(),
       persontyp: PersonTyp.natuerlich,
       rollen: [Rolle.Sonstiger],
-    }];
-    this.beteiligte$.next(this.beteiligte);
+    };
+    this.beteiligte = [...this.beteiligte, beteiligter];
+    this.beteiligteList$.next(this.beteiligte);
+    this.beteiligterEdit$.next(beteiligter);
+  }
+
+  public clearBeteiligterEdit(): void {
+    this.beteiligterEdit$.next(undefined);
   }
 
   private initialize(): Beteiligter[] {

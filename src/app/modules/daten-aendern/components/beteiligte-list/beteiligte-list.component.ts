@@ -11,22 +11,18 @@ import { BeteiligteService } from '../../services/beteiligte.service';
 })
 export class BeteiligteListComponent implements OnInit {
   @Input() beteiligte: Beteiligter[] | null = [];
+  
+  constructor(private readonly bs: BeteiligteService) {}
 
-  editBeteiligter: Beteiligter | null = null;
+  editBeteiligter$ = this.bs.editingBeteiligter$;
 
   onAddBeteiligter(): void {
     this.bs.addNewBeteiligter();
   }
 
   onBeteiligterEdit(beteiligter: Beteiligter): void {
-    this.editBeteiligter = beteiligter;
+    this.bs.onEditBeteiligter(beteiligter);
   }
-
-  onBeteiligterSaved(beteiligter: Beteiligter): void {
-    this.editBeteiligter = null;
-  }
-
-  constructor(private readonly bs: BeteiligteService) {}
 
   ngOnInit(): void {}
 }

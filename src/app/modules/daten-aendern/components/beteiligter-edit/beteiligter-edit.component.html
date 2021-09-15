@@ -1,101 +1,125 @@
 <div>{{ name }}</div>
 
-<div *ngIf="beteiligterForm">
-  <form [formGroup]="beteiligterForm" (ngSubmit)="onSubmit()">
-    <div class="form-check" *ngFor="let pt of persontypes">
+<form
+  class="needs-validation"
+  [formGroup]="beteiligterForm"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="form-check" *ngFor="let pt of persontypes">
+    <input
+      class="form-check-input"
+      type="radio"
+      id="{{ pt }}"
+      formControlName="persontyp"
+      [value]="pt"
+    />
+    <label class="form-check-label" for="gridRadios1">{{ pt }}</label>
+  </div>
+
+  <div class="row" formGroupName="natPerson" *ngIf="natuerlich">
+    <div class="col mb-4">
+      <label class="form-label" for="vorname">Vorname</label>
       <input
-        class="form-check-input"
-        type="radio"
-        id="{{ pt }}"
-        formControlName="persontyp"
-        [value]="pt"
+        id="vorname"
+        type="text"
+        class="form-control"
+        placeholder="Vorname"
+        aria-label="Vorname"
+        formControlName="vorname"
+        [class.is-invalid]="displayMessage.vorname"
       />
-      <label class="form-check-label" for="gridRadios1">{{ pt }}</label>
+      <div class="invalid-feedback">{{ displayMessage.vorname }}</div>
     </div>
-
-    <div class="row" formGroupName="natPerson" *ngIf="natuerlich">
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Vorname"
-          aria-label="Vorname"
-          formControlName="vorname"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Nachname"
-          aria-label="Nachname"
-          formControlName="nachname"
-        />
-      </div>
+    <div class="col">
+      <label class="form-label" for="nachname">Nachname</label>
+      <input
+        id="nachname"
+        type="text"
+        class="form-control"
+        placeholder="Nachname"
+        aria-label="Nachname"
+        formControlName="nachname"
+      />
+      <div class="invalid-feedback">{{ displayMessage.nachname }}</div>
     </div>
+  </div>
 
-    <div class="row" formGroupName="jurPerson" *ngIf="juristisch">
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Name 1"
-          aria-label="Name 1"
-          formControlName="name1"
-        />
-      </div>
-      <div class="col">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Name 2"
-          aria-label="Name 2"
-          formControlName="name2"
-        />
-      </div>
+  <div class="row" formGroupName="jurPerson" *ngIf="juristisch">
+    <div class="col">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Name 1"
+        aria-label="Name 1"
+        formControlName="name1"
+        [class.is-invalid]="displayMessage.name1"
+      />
+      <div class="invalid-feedback">{{ displayMessage.name1 }}</div>
     </div>
+    <div class="col">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Name 2"
+        aria-label="Name 2"
+        formControlName="name2"
+      />
+    </div>
+  </div>
 
-    <button class="btn btn-primary" type="button" (click)="addAdress()">Neue Adresse</button>
-    <div
-      class="row"
-      formArrayName="adressen"
-      *ngFor="let adresse of adressen.controls; let i = index"
+  <button class="btn btn-primary" type="button" (click)="addAdress()">
+    Neue Adresse
+  </button>
+  <div
+    class="row"
+    formArrayName="adressen"
+    *ngFor="let adresse of adressen.controls; let i = index"
+  >
+    <div [formGroupName]="i">
+      <label for="strassenr-{{ i }}">Strasse:</label>
+      <input
+        id="strassenr-{{ i }}"
+        type="text"
+        class="form-control"
+        formControlName="strasseNummer"
+      />
+
+      <label for="postleitzahl-{{ i }}">Postleitzahl:</label>
+      <input
+        id="postleitzahl-{{ i }}"
+        type="text"
+        class="form-control"
+        formControlName="postleitzahl"
+      />
+
+      <label for="ort-{{ i }}">Ort:</label>
+      <input
+        id="ort-{{ i }}"
+        type="text"
+        class="form-control"
+        formControlName="ort"
+      />
+
+      <label for="land-{{ i }}">Land:</label>
+      <input
+        id="land-{{ i }}"
+        type="text"
+        class="form-control"
+        formControlName="land"
+      />
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-secondary" type="button" (click)="abbrechen()">
+      Abbrechen
+    </button>
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [disabled]="!beteiligterForm.valid"
     >
-      <div [formGroupName]="i">
-        <label for="strassenr-{{ i }}">Strasse:</label>
-        <input
-          id="strassenr-{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="strasseNummer"
-        />
-
-        <label for="postleitzahl-{{ i }}">Postleitzahl:</label>
-        <input
-          id="postleitzahl-{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="postleitzahl"
-        />
-
-        <label for="ort-{{ i }}">Ort:</label>
-        <input
-          id="ort-{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="ort"
-        />
-
-        <label for="land-{{ i }}">Land:</label>
-        <input
-          id="land-{{ i }}"
-          type="text"
-          class="form-control"
-          formControlName="land"
-        />
-      </div>
-    </div>
-
-    <button class="btn btn-primary" type="submit">Speichern</button>
-  </form>
-</div>
+      Speichern
+    </button>
+  </div>
+</form>
