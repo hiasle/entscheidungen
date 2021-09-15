@@ -1,16 +1,7 @@
 import { FormGroup } from '@angular/forms';
 
-// Provide all set of validation messages here
-const VALIDATION_MESSAGES = {
-  vorname: {
-    required: 'Required',
-    minlength: 'Minimum eingeben',
-  },
-  nachname: {
-    required: 'Required',
-    minlength: 'The password length must be greater than or equal to 8',
-  },
-};
+// Provide a default value
+const VALIDATION_MESSAGES = {};
 
 export class GenericValidator {
   // By default the defined set of validation messages is pass but a custom message when the class is called can also be passed

@@ -7,26 +7,25 @@ import {
   OnDestroy,
   OnInit,
   Output,
-  ViewChildren
+  ViewChildren,
 } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
   FormControlName,
-  FormGroup
+  FormGroup,
 } from '@angular/forms';
 import { fromEvent, merge, Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import {
-  Beteiligter,
-  PersonTyp
-} from '../../models/beteiligter.model';
+import { Beteiligter, PersonTyp } from '../../models/beteiligter.model';
 import { BeteiligteFormService } from '../../services/beteiligte-form.service';
 import { BeteiligteService } from '../../services/beteiligte.service';
 import { extractName, mergeBeteiligter } from '../../utils/beteiligte-utils';
 import { GenericValidator } from '../../utils/generic-validator.utils';
+import { Rolle } from '../../models/beteiligter.model';
 
 type PersonTypKeys = keyof typeof PersonTyp;
+type RollenTypKeys = keyof typeof Rolle;
 
 const MIN_LENGTH = 4;
 const MIN_LENGTH_MSG = (key: string) =>
@@ -44,7 +43,7 @@ const VALIDATION_MESSAGES = {
   name1: {
     required: 'Muss angegeben werden!',
     minlength: MIN_LENGTH_MSG('Name1'),
-  }
+  },
 };
 
 @Component({
@@ -62,6 +61,15 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
   @Output() onSave = new EventEmitter<Beteiligter>();
 
   beteiligterForm: FormGroup;
+
+  rollen: Rolle[] = [
+    Rolle.AnzeigendeBerichtendeStelle,
+    Rolle.Beschuldigter,
+    Rolle.Opfer,
+    Rolle.Sonstiger,
+    Rolle.Verteidiger,
+    Rolle.Zeuge,
+  ];
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -109,6 +117,12 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
             this.beteiligterForm.controls['jurPerson'].disable();
             return;
         }
+      });
+
+    this.beteiligterForm.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        console.log('Beteiligter Form changed: ', this.beteiligterForm.value);
       });
   }
 
@@ -159,6 +173,4 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
       this.bfs.createAdressGroup(undefined)
     );
   }
-
-  
 }

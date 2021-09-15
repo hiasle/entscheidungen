@@ -13,7 +13,20 @@
       formControlName="persontyp"
       [value]="pt"
     />
-    <label class="form-check-label" for="gridRadios1">{{ pt }}</label>
+    <label class="form-check-label" for="{{ pt }}">{{ pt }}</label>
+  </div>
+
+  <div class="form-group">
+    <label for="rollen">City</label>
+    <ng-select
+      [items]="rollen"
+      [multiple]="true"
+      [hideSelected]="true"
+      labelForId="rollen"
+      placeholder="Rollen..."
+      clearAllText="Clear"
+      formControlName="rollen"
+    ></ng-select>
   </div>
 
   <div class="row" formGroupName="natPerson" *ngIf="natuerlich">
@@ -46,7 +59,9 @@
 
   <div class="row" formGroupName="jurPerson" *ngIf="juristisch">
     <div class="col">
+      <label class="form-label" for="name1">Name 1</label>
       <input
+        id="name1"
         type="text"
         class="form-control"
         placeholder="Name 1"
@@ -57,7 +72,9 @@
       <div class="invalid-feedback">{{ displayMessage.name1 }}</div>
     </div>
     <div class="col">
+      <label class="form-label" for="name2">Name 2</label>
       <input
+        id="name2"
         type="text"
         class="form-control"
         placeholder="Name 2"
@@ -117,7 +134,6 @@
     <button
       class="btn btn-primary"
       type="submit"
-      [disabled]="!beteiligterForm.valid"
     >
       Speichern
     </button>

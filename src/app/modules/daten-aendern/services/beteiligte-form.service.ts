@@ -15,6 +15,7 @@ export class BeteiligteFormService {
       persontyp: this.fb.control(
         beteiligter?.persontyp ?? PersonTyp.natuerlich
       ),
+      rollen: this.fb.control(beteiligter?.rollen ?? []),
       natPerson: this.fb.group({
         vorname: this.fb.control(beteiligter?.natPerson?.vorname, [
           Validators.required,

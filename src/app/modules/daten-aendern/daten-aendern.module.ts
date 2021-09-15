@@ -6,6 +6,7 @@ import { BeteiligterReadComponent } from './components/beteiligter-read/beteilig
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BeteiligterEditComponent } from './components/beteiligter-edit/beteiligter-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     BeteiligterReadComponent,
     BeteiligterEditComponent,
   ],
-  imports: [CommonModule, FontAwesomeModule, ReactiveFormsModule],
+  imports: [CommonModule, FontAwesomeModule, ReactiveFormsModule, NgSelectModule],
   exports: [WelcomeDatenAendernComponent],
 })
 export class DatenAendernModule {}
