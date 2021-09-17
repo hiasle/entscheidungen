@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Adresse, Beteiligter, PersonTyp } from '../models/beteiligter.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BeteiligteFormService {
+  constructor(private readonly fb: FormBuilder) {}
 
-  constructor(private readonly fb: FormBuilder) {
-  }
-
-  createForm(beteiligter: Beteiligter | undefined, minLength: number): FormGroup {
+  createForm(
+    beteiligter: Beteiligter | undefined,
+    minLength: number
+  ): FormGroup {
     const formgroup = this.fb.group({
       persontyp: this.fb.control(
         beteiligter?.persontyp ?? PersonTyp.natuerlich
@@ -21,7 +22,10 @@ export class BeteiligteFormService {
           Validators.required,
           Validators.minLength(minLength),
         ]),
-        nachname: this.fb.control(beteiligter?.natPerson?.nachname),
+        nachname: this.fb.control(beteiligter?.natPerson?.nachname, [
+          Validators.required,
+          Validators.minLength(minLength),
+        ]),
       }),
       jurPerson: this.fb.group({
         name1: this.fb.control(beteiligter?.jurPerson?.name1, [
@@ -34,7 +38,7 @@ export class BeteiligteFormService {
     });
     return formgroup;
   }
-  
+
   private createAdressArr(adresses: Adresse[] | undefined): FormGroup[] {
     if (adresses == null || adresses.length < 1) {
       return [this.createAdressGroup(undefined)];
@@ -45,7 +49,7 @@ export class BeteiligteFormService {
     }
     return array;
   }
-  
+
   createAdressGroup(adress: Adresse | undefined): FormGroup {
     if (adress == null) {
       return this.fb.group({
@@ -55,7 +59,7 @@ export class BeteiligteFormService {
         land: this.fb.control(''),
       });
     }
-  
+
     return this.fb.group({
       strasseNummer: this.fb.control(adress.strasseNummer),
       postleitzahl: this.fb.control(adress.postleitzahl),

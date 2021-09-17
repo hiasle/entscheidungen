@@ -37,8 +37,8 @@ const VALIDATION_MESSAGES = {
     minlength: MIN_LENGTH_MSG('Vorname'),
   },
   nachname: {
-    required: 'Muss angegeben werden!',
-    minlength: 'The password length must be greater than or equal to 8',
+    required: 'Nachname muss angegeben werden!',
+    minlength: MIN_LENGTH_MSG('Nachname'),
   },
   name1: {
     required: 'Muss angegeben werden!',
