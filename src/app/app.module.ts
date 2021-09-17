@@ -22,6 +22,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { NavSidebarComponent } from './components/nav-sidebar/nav-sidebar.component';
 import { EntscheidungenModule } from './modules/entscheidungen/entscheidungen.module';
 import { DatenAendernModule } from './modules/daten-aendern/daten-aendern.module';
+import { TemplatedrivenModule } from './modules/templatedriven/templatedriven.module';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DatenAendernModule } from './modules/daten-aendern/daten-aendern.module
     ReactiveFormsModule,
     EntscheidungenModule,
     DatenAendernModule,
+    TemplatedrivenModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
