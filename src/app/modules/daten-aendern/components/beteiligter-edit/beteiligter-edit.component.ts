@@ -60,7 +60,7 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
   @Input() beteiligter: Beteiligter | undefined = undefined;
   @Output() onSave = new EventEmitter<Beteiligter>();
 
-  beteiligterForm: FormGroup;
+  beteiligterForm: FormGroup = this.fb.group({});
 
   rollen: Rolle[] = [
     Rolle.AnzeigendeBerichtendeStelle,
@@ -82,7 +82,6 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
     private readonly bs: BeteiligteService,
     private readonly bfs: BeteiligteFormService
   ) {
-    this.beteiligterForm = this.bfs.createForm(undefined, MIN_LENGTH);
     this.genericValidator = new GenericValidator(VALIDATION_MESSAGES);
   }
 
@@ -118,12 +117,6 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
             return;
         }
       });
-
-    this.beteiligterForm.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        console.log('Beteiligter Form changed: ', this.beteiligterForm.value);
-      });
   }
 
   ngOnDestroy(): void {
@@ -142,6 +135,13 @@ export class BeteiligterEditComponent implements OnInit, OnDestroy {
 
   abbrechen(): void {
     this.bs.clearBeteiligterEdit();
+  }
+
+  getAdressGroup(index: number): FormGroup {
+    console.log('here you are ');
+    return (<FormArray>this.beteiligterForm.controls['adressen']).at(
+      index
+    ) as FormGroup;
   }
 
   get name(): string {

@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BeteiligterEditComponent } from './components/beteiligter-edit/beteiligter-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { AdressControlComponent } from './components/utils/adress-control/adress-control.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     BeteiligteListComponent,
     BeteiligterReadComponent,
     BeteiligterEditComponent,
+    AdressControlComponent,
   ],
   imports: [CommonModule, FontAwesomeModule, ReactiveFormsModule, NgSelectModule],
   exports: [WelcomeDatenAendernComponent],

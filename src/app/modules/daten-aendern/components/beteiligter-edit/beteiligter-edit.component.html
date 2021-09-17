@@ -93,39 +93,7 @@
     formArrayName="adressen"
     *ngFor="let adresse of adressen.controls; let i = index"
   >
-    <div [formGroupName]="i">
-      <label for="strassenr-{{ i }}">Strasse:</label>
-      <input
-        id="strassenr-{{ i }}"
-        type="text"
-        class="form-control"
-        formControlName="strasseNummer"
-      />
-
-      <label for="postleitzahl-{{ i }}">Postleitzahl:</label>
-      <input
-        id="postleitzahl-{{ i }}"
-        type="text"
-        class="form-control"
-        formControlName="postleitzahl"
-      />
-
-      <label for="ort-{{ i }}">Ort:</label>
-      <input
-        id="ort-{{ i }}"
-        type="text"
-        class="form-control"
-        formControlName="ort"
-      />
-
-      <label for="land-{{ i }}">Land:</label>
-      <input
-        id="land-{{ i }}"
-        type="text"
-        class="form-control"
-        formControlName="land"
-      />
-    </div>
+    <app-adress-control [adressGroup]="getAdressGroup(i)"></app-adress-control>
   </div>
 
   <div class="d-flex justify-content-end">
